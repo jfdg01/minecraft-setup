@@ -19,6 +19,10 @@ world_the_end/
 backups/
 *.tar.gz
 
+# SSH keys — never commit these
+*.key
+*.pem
+
 # OS
 .DS_Store
 Thumbs.db
