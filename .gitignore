@@ -1,0 +1,24 @@
+# Server binaries (re-download on target machine)
+server.jar
+playit.exe
+libraries/
+versions/
+cache/
+
+# Runtime data
+logs/
+usercache.json
+*.lck
+
+# World data (too large for git — use backups instead)
+world/
+world_nether/
+world_the_end/
+
+# Backups
+backups/
+*.tar.gz
+
+# OS
+.DS_Store
+Thumbs.db
