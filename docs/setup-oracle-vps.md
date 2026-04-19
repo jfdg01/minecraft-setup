@@ -2,14 +2,31 @@
 
 **Goal:** 24/7 PaperMC server for 3-5 players on Oracle Always Free (4 OCPU / 24 GB RAM), zero cost.
 
+## Progress tracker
+
+- [x] Phase 1 — Oracle account created
+- [x] Phase 1b — Upgraded to Pay-As-You-Go (activation takes 5-30 min, confirmation via email)
+- [x] Phase 1c — Budget alert configured ($1 limit, 90% threshold, alerts to 3 emails)
+- [ ] Phase 2 — Provision A1 ARM VM ← **current blocker: EU-MADRID capacity**
+- [ ] Phase 3 — Open firewall (VCN + iptables)
+- [ ] Phase 4 — Set up server environment
+- [ ] Phase 5 — Transfer world
+- [ ] Phase 6 — systemd service
+- [ ] Phase 7 — Automatic backups
+
 ---
 
-## Phase 1 — Create Oracle Cloud account
+## Phase 1 — Create Oracle Cloud account ✓
 
 1. Go to **cloud.oracle.com** → "Start for free"
-2. Pick a **Home Region** near you (e.g. Frankfurt, Amsterdam) — cannot be changed later
-3. Enter credit card for ~$1 verification hold (never charged on Always Free)
-4. When prompted, **upgrade to Pay-As-You-Go** — still $0 within Always Free limits, but gives ARM provisioning priority and prevents idle reclamation
+2. Pick a **Home Region** near you — cannot be changed later
+   - Account uses **EU-MADRID** (single availability domain: AD-1 only)
+3. Enter credit card for ~€93 verification hold (released in 3-5 days, never an actual charge)
+4. **Upgrade to Pay-As-You-Go** — still $0 within Always Free limits, but gives ARM provisioning priority
+   - Activation takes 5-30 minutes, confirmed by email
+5. **Set up budget alert**: Billing → Budgets → Create Budget
+   - Amount: $1/month, threshold: 90% actual spend, 1-year window
+   - Protects against accidental paid resource provisioning
 
 ---
 
@@ -24,7 +41,13 @@
 7. Click **Create** and wait for status `Running`
 8. Note the **Public IP address**
 
-> **If you get "Out of host capacity":** Retry manually (sometimes clears in minutes), or use the [hitrov/oci-arm-host-capacity](https://github.com/hitrov/oci-arm-host-capacity) script to auto-retry the API until a slot opens.
+> **EU-MADRID has only AD-1** — there is no AD-2/AD-3 to fall back to. Capacity issues here are common.
+>
+> **If you get "Out of host capacity":**
+> 1. Wait for PAYG upgrade to fully activate (5-30 min) — it improves provisioning priority
+> 2. Retry manually at off-peak hours (3-6 AM Madrid time works best)
+> 3. Use the [hitrov/oci-arm-host-capacity](https://github.com/hitrov/oci-arm-host-capacity) script to auto-retry the API until a slot opens
+> 4. Do NOT use Preemptible capacity — it can be killed at any time with 2 min notice
 
 ---
 
